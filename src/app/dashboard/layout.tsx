@@ -8,7 +8,6 @@ import { usePathname } from "next/navigation";
 import { Button } from "@heroui/react";
 import { signOut } from "next-auth/react";
 import { FiLogOut } from "react-icons/fi";
-import Image from "next/image";
 
 interface PropTypes {
     children: ReactNode;
@@ -53,17 +52,7 @@ const AdminLayout = ({ children }: PropTypes) => {
                     </div>
                 </div>
                 <div>
-                    {/* <div className="flex justify-end w-full">
-                        <Image 
-                            src="/images/user.png"
-                            alt="user"
-                            width={50}
-                            height={50}
-                        />
-                    </div> */}
-                    <div>
-                        {children}
-                    </div>
+                    {children}
                 </div>
             </div>
         </div>
