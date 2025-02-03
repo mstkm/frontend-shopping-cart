@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <div className="">
+    <div className="p-8">
       <div>
         <h1 className="text-3xl font-bold">Halaman Product</h1>
       </div>

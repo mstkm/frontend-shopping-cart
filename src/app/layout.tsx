@@ -17,21 +17,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const [queryClient] = useState(() => new QueryClient());
-    
+
   return (
     <html lang="en">
       <body className={`${montserrat.className}`}>
         <SessionProvider>
           <QueryClientProvider client={queryClient}>
-            <div className="flex">
-              <div className="h-screen min-w-fit w-[18rem] border-r-1 shadow-md">
-                <div className="flex items-center justify-center p-4">
-                  <h1 className="font-bold">Dashboard</h1>
-                </div>
-                
-              </div>
-              <section>{children}</section>
-            </div>
+            {children}
           </QueryClientProvider>
         </SessionProvider>
       </body>

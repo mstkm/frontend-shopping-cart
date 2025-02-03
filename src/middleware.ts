@@ -1,7 +1,7 @@
-import { getToken } from 'next-auth/jwt';
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
-import { IToken } from './types/Types';
+import { getToken } from "next-auth/jwt";
+import { NextResponse } from "next/server"
+import type { NextRequest } from "next/server"
+import { IToken } from "./types/Types";
 
 export async function middleware(request: NextRequest) {
     const token = await getToken({
@@ -10,13 +10,16 @@ export async function middleware(request: NextRequest) {
     }) as IToken;
 
     const { pathname }  = request.nextUrl;
-    if (pathname === "/register" || pathname === "/login") {
+    // const isAdmin = token.user?.role === "Admin";
+    if (pathname === "/register" || pathname === "/login" || pathname === "/") {
         if (token) {
-            return NextResponse.redirect(new URL('/', request.url));
+            if (token.user?.role === "Admin") {
+                return NextResponse.redirect(new URL("/dashboard/product", request.url));
+            } 
         } 
     } else {
         if (!token) {
-            return NextResponse.redirect(new URL('/login', request.url));
+            return NextResponse.redirect(new URL("/login", request.url));
         }
     }
     
@@ -24,5 +27,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ["/", "/register/:path*", "/login/:path*", "/dashboard/:path*", "/product/:path*"],
+    matcher: ["/", "/register/:path*", "/login/:path*", "/dashboard/:path*"],
 }
