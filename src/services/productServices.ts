@@ -4,11 +4,21 @@ import axios from "axios";
 const baseUrlApi = process.env.NEXT_PUBLIC_BASE_URL_API;
 const authServices = {
     create: async (data: IFormDataProduct) => {
-        const res = await axios.post(`${baseUrlApi}/products`, data, {
+        const formData = new FormData();
+    
+        formData.append("Name", data.Name);
+        formData.append("Description", data.Description);
+        formData.append("Price", data.Price.toString());
+        formData.append("Stock", data.Stock.toString());
+        if (data.Picture) {
+            formData.append("Picture", data.Picture);
+        }
+        
+        const res = await axios.post(`${baseUrlApi}/products`, formData, {
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "multipart/form-data"
             }
-        })
+        });
         return res;
     },
     get: async () => {

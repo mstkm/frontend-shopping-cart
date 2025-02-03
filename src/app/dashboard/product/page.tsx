@@ -21,6 +21,7 @@ import { useEffect, useState } from "react";
 import { FaRegTrashCan, FaPenToSquare } from "react-icons/fa6";
 
 const DashboardProductPage = () => {
+    const baseUrlApi = process.env.NEXT_PUBLIC_BASE_URL_API;
     const [isOpenModalFormCreateProduct, setIsOpenModalFormCreateProduct] = useState<boolean>(false);
     const [isOpenModalFormEditProduct, setIsOpenModalFormEditProduct] = useState<boolean>(false);
     const [isOpenModalDeleteProduct, setIsOpenModalDeleteProduct] = useState<boolean>(false);
@@ -92,6 +93,7 @@ const DashboardProductPage = () => {
                         <TableColumn>Description</TableColumn>
                         <TableColumn>Price</TableColumn>
                         <TableColumn>Stock</TableColumn>
+                        <TableColumn>Picture</TableColumn>
                         <TableColumn>Actions</TableColumn>
                     </TableHeader>
                     <TableBody>
@@ -102,6 +104,16 @@ const DashboardProductPage = () => {
                                     <TableCell>{product.Description}</TableCell>
                                     <TableCell>{product.Price}</TableCell>
                                     <TableCell>{product.Stock}</TableCell>
+                                    <TableCell>{product.Picture ? (
+                                        <Image 
+                                            src={`${baseUrlApi}/uploads/${product?.Picture}`}
+                                            alt="Picture"
+                                            width={100}
+                                            height={100}
+                                        />
+                                    ): (
+                                        "No Picture"
+                                    )}</TableCell>
                                     <TableCell className="flex gap-2">
                                         <Button 
                                             isIconOnly 

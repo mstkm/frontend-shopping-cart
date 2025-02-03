@@ -31,6 +31,13 @@ const schema = yup.object({
     Description: yup.string().required("Please enter product description"),
     Price: yup.number().required("Please enter product price"),
     Stock: yup.number().required("Please enter product stock"),
+    Picture: yup
+        .mixed()
+        .test("fileType", "Only image files are allowed", (value) => {
+            if (!value || !(value instanceof File)) return false;
+            return ["image/jpeg", "image/jpg", "image/png", "image/gif"].includes(value.type);
+        })
+        .required("Please upload a product image"),
 }).required();
 
 const ModalFormCreateProduct = ({ 
@@ -127,23 +134,38 @@ const ModalFormCreateProduct = ({
                                     />
                                 )}
                             />
-                        <Controller 
-                            name="Stock"
-                            control={control}
-                            render={({ field }) => (
-                                <Input
-                                    {...field}
-                                    type="number"
-                                    label="Stock"
-                                    variant="bordered"
-                                    autoComplete="off"
-                                    isInvalid={errors.Stock !== undefined}
-                                    errorMessage={errors.Stock?.message}
-                                    value={field.value?.toString() || ""}
-                                    onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : "")}
-                                />
-                            )}
-                        />
+                            <Controller 
+                                name="Stock"
+                                control={control}
+                                render={({ field }) => (
+                                    <Input
+                                        {...field}
+                                        type="number"
+                                        label="Stock"
+                                        variant="bordered"
+                                        autoComplete="off"
+                                        isInvalid={errors.Stock !== undefined}
+                                        errorMessage={errors.Stock?.message}
+                                        value={field.value?.toString() || ""}
+                                        onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : "")}
+                                    />
+                                )}
+                            />
+                            <Controller 
+                                name="Picture"
+                                control={control}
+                                render={({ field }) => (
+                                    <Input
+                                        type="file"
+                                        label="Picture"
+                                        variant="bordered"
+                                        accept="image/*"
+                                        onChange={(e) => field.onChange(e.target.files?.[0] || null)}
+                                        isInvalid={errors.Picture !== undefined}
+                                        errorMessage={errors.Picture?.message}
+                                    />
+                                )}
+                            />
                             
                             <div className="flex gap-2 justify-end w-full my-4">
                                 <Button color="danger" onPress={onClose}>
