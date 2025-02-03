@@ -46,7 +46,7 @@ const LoginPage = () => {
         onSuccess: (res) => {
             if (res?.ok) {
                 reset();
-                router.push("/");
+                router.push("/dashboard");
             } else {
                 setErrorLogin("Invalid credentials");
             }
