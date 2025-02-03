@@ -12,11 +12,7 @@ export async function middleware(request: NextRequest) {
     const { pathname }  = request.nextUrl;
     if (pathname === "/register" || pathname === "/login") {
         if (token) {
-            if ((token.user?.role)?.toLowerCase() === "admin") {
-                return NextResponse.redirect(new URL('/dashboard', request.url));
-            } else {
-                return NextResponse.redirect(new URL('/product', request.url));
-            }
+            return NextResponse.redirect(new URL('/', request.url));
         } 
     } else {
         if (!token) {
@@ -28,5 +24,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ["/register/:path*", "/login/:path*", "/dashboard/:path*", "/product/:path*"],
+    matcher: ["/", "/register/:path*", "/login/:path*", "/dashboard/:path*", "/product/:path*"],
 }
