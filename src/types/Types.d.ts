@@ -27,3 +27,18 @@ export interface ISession extends Session {
 export interface IToken extends JWT {
     user?: IUser
 }
+
+export interface IFormDataProduct {
+    Name: string;
+    Description: string;
+    Price: number;
+    Stock: number;
+}
+
+export interface IProduct {
+    ProductID: string;
+    Name: string;
+    Description: string;
+    Price: number;
+    Stock: number;
+}

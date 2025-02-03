@@ -51,7 +51,7 @@ const AdminLayout = ({ children }: PropTypes) => {
                         </Button>
                     </div>
                 </div>
-                <div>
+                <div className="flex-1">
                     {children}
                 </div>
             </div>
