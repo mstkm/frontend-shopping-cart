@@ -18,8 +18,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { FaEdit } from "react-icons/fa";
-import { FaTrashCan } from "react-icons/fa6";
+import { FaRegTrashCan, FaPenToSquare } from "react-icons/fa6";
 
 const DashboardProductPage = () => {
     const [isOpenModalFormCreateProduct, setIsOpenModalFormCreateProduct] = useState<boolean>(false);
@@ -107,7 +106,7 @@ const DashboardProductPage = () => {
                                         <Button 
                                             isIconOnly 
                                             size="sm" 
-                                            color="warning"
+                                            color="primary"
                                             onPress={() => {
                                                 setIsOpenModalFormEditProduct(true)
                                                 setSelectedProduct({
@@ -119,7 +118,7 @@ const DashboardProductPage = () => {
                                                 });
                                             }}
                                         >
-                                            <FaEdit />
+                                            <FaPenToSquare />
                                         </Button>
                                         <Button 
                                             isIconOnly 
@@ -130,7 +129,7 @@ const DashboardProductPage = () => {
                                                 setSelectedId(product.ProductID)
                                             }}
                                         >
-                                            <FaTrashCan />
+                                            <FaRegTrashCan />
                                         </Button>
                                     </TableCell>
                                 </TableRow>
