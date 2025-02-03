@@ -1,5 +1,5 @@
 import productServices from "@/services/productServices";
-import { IFormDataProduct } from "@/types/Types";
+import { IFormDataProduct, IProduct } from "@/types/Types";
 import {  
     Modal,
     ModalContent,
@@ -8,19 +8,23 @@ import {
     Button,
     Form,
     Input,
-    Spinner
+    Spinner,
+    Textarea
 } from "@heroui/react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 
 interface PropTypes {
-    isOpenFormCreateProduct: boolean;
-    setIsOpenFormCreateProduct: Dispatch<SetStateAction<boolean>>;
+    isOpenModalFormEditProduct: boolean;
+    setIsOpenModalFormEditProduct: Dispatch<SetStateAction<boolean>>;
     refetchDataProducts: boolean;
     setRefetchDataProducts: Dispatch<SetStateAction<boolean>>;
+    setIsShowAlertSuccess: Dispatch<SetStateAction<boolean>>;
+    setAlertMessageSuccess: Dispatch<SetStateAction<string>>;
+    selectedProduct: IProduct;
 }
 
 const schema = yup.object({
@@ -30,41 +34,64 @@ const schema = yup.object({
     Stock: yup.number().required("Please enter product stock"),
 }).required();
 
-const FormCreateProduct = ({ 
-    isOpenFormCreateProduct, 
-    setIsOpenFormCreateProduct,
+const ModalFormEditProduct = ({ 
+    isOpenModalFormEditProduct, 
+    setIsOpenModalFormEditProduct,
     refetchDataProducts,
-    setRefetchDataProducts
+    setRefetchDataProducts,
+    setIsShowAlertSuccess,
+    setAlertMessageSuccess,
+    selectedProduct
 }: PropTypes) => {
-    const [errorCreateProduct, setErrorCreateProduct] = useState<string>("");
+    const [errorEditProduct, setErrorEditProduct] = useState<string>("");
     const { control, handleSubmit, formState: { errors }, reset } = useForm({
-        resolver: yupResolver(schema)
+        resolver: yupResolver(schema),
+        defaultValues: {
+            Name: selectedProduct?.Name || "",
+            Description: selectedProduct?.Description || "",
+            Price: selectedProduct?.Price || 0,
+            Stock: selectedProduct?.Stock || 0,
+        }
     });
 
-    const addProductService = async (data: IFormDataProduct) => {
-        const res = await productServices.create(data)
+    useEffect(() => {
+        if (selectedProduct) {
+            reset({
+                Name: selectedProduct.Name || "",
+                Description: selectedProduct.Description || "",
+                Price: selectedProduct.Price || 0,
+                Stock: selectedProduct.Stock || 0,
+            });
+        }
+    }, [selectedProduct, reset]);
+
+    const editProductService = async (data: IFormDataProduct) => {
+        if (!selectedProduct.ProductID) throw new Error("No product selected for editing!");
+        const res = await productServices.update(data, selectedProduct.ProductID);
         return res;
     };
 
     const {
-        mutate: mutateCreateProduct,
-        isPending: isPendingCreateProduct,
+        mutate: mutateEditProduct,
+        isPending: isPendingEditProduct,
     } = useMutation({
-        mutationFn: addProductService,
+        mutationFn: editProductService,
         onSuccess: () => {
             reset();
             setRefetchDataProducts(!refetchDataProducts);
-            setIsOpenFormCreateProduct(false)
+            setIsOpenModalFormEditProduct(false);
+            setIsShowAlertSuccess(true);
+            setAlertMessageSuccess("Success Edit product!")
         },
         onError: (error) => {
-            setErrorCreateProduct(error.message);
+            setErrorEditProduct(error.message);
         }
     });
 
-    const handleCreateProduct = (data: IFormDataProduct) => mutateCreateProduct(data);
+    const handleEditProduct = (data: IFormDataProduct) => mutateEditProduct(data);
 
     return (
-        <Modal isOpen={isOpenFormCreateProduct} onOpenChange={() => setIsOpenFormCreateProduct(false)}>
+        <Modal isOpen={isOpenModalFormEditProduct} onOpenChange={() => setIsOpenModalFormEditProduct(false)}>
             <ModalContent>
                 {(onClose) => (
                     <>
@@ -72,7 +99,7 @@ const FormCreateProduct = ({
                         <ModalBody>
                         <Form
                             className="w-full flex flex-col"
-                            onSubmit={handleSubmit(handleCreateProduct)}
+                            onSubmit={handleSubmit(handleEditProduct)}
                         >
                             <Controller 
                                 name="Name"
@@ -93,15 +120,14 @@ const FormCreateProduct = ({
                                 name="Description"
                                 control={control}
                                 render={({ field }) => (
-                                    <Input
-                                    {...field}
-                                    type="text"
-                                    label="Description"
-                                    variant="bordered"
-                                    autoComplete="off"
-                                    isInvalid={errors.Description !== undefined}
-                                    errorMessage={errors.Description?.message}
-                                />
+                                    <Textarea
+                                        {...field}
+                                        label="Description"
+                                        variant="bordered"
+                                        autoComplete="off"
+                                        isInvalid={errors.Description !== undefined}
+                                        errorMessage={errors.Description?.message}
+                                    />
                                 )}
                             />
                             <Controller 
@@ -139,16 +165,16 @@ const FormCreateProduct = ({
                             )}
                         />
                             
-                            <div className="flex justify-end w-full my-4">
-                                <Button color="danger" variant="light" onPress={onClose}>
+                            <div className="flex gap-2 justify-end w-full my-4">
+                                <Button color="danger" onPress={onClose}>
                                     Close
                                 </Button>
-                                <Button type={isPendingCreateProduct ? "button" : "submit"} color="primary">
-                                    {isPendingCreateProduct ? <Spinner color="white" /> : "Submit"}
+                                <Button type={isPendingEditProduct ? "button" : "submit"} color="primary">
+                                    {isPendingEditProduct ? <Spinner color="white" /> : "Submit"}
                                 </Button>
                             </div>
 
-                            {(errorCreateProduct !== "") && <p className="w-full text-center text-red-800 font-bold">{errorCreateProduct}</p>}
+                            {(errorEditProduct !== "") && <p className="w-full text-center text-red-800 font-bold">{errorEditProduct}</p>}
                         </Form>
                         </ModalBody>
                     </>
@@ -158,4 +184,4 @@ const FormCreateProduct = ({
     )
 }
 
-export default FormCreateProduct;
+export default ModalFormEditProduct;

@@ -15,6 +15,18 @@ const authServices = {
         const res = await axios.get(`${baseUrlApi}/products`);
         return res;
     },
+    update: async (data: IFormDataProduct, selectedId: string) => {
+        const res = await axios.put(`${baseUrlApi}/products/${selectedId}`, data, {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        return res;
+    },
+    delete: async (id: string) => {
+        const res = await axios.delete(`${baseUrlApi}/products/${id}`);
+        return res;
+    }
 }
 
 export default authServices;

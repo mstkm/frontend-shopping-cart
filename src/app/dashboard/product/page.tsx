@@ -2,7 +2,9 @@
 
 import productServices from "@/services/productServices";
 import { IProduct } from "@/types/Types";
-import FormCreateProduct from "@/ui/product/FormCreateProduct";
+import ModalDeleteProduct from "@/ui/product/ModalDeleteProduct";
+import ModalFormCreateProduct from "@/ui/product/ModalFormCreateProduct";
+import ModalFormEditProduct from "@/ui/product/ModalFormEditProduct";
 import {  
     Button,
     Table,
@@ -10,16 +12,31 @@ import {
     TableColumn,
     TableBody,
     TableRow,
-    TableCell, } from "@heroui/react";
+    TableCell,
+    Alert,
+} from "@heroui/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { FaEdit } from "react-icons/fa";
 import { FaTrashCan } from "react-icons/fa6";
 
 const DashboardProductPage = () => {
-    const [isOpenFormCreateProduct, setIsOpenFormCreateProduct] = useState<boolean>(false);
+    const [isOpenModalFormCreateProduct, setIsOpenModalFormCreateProduct] = useState<boolean>(false);
+    const [isOpenModalFormEditProduct, setIsOpenModalFormEditProduct] = useState<boolean>(false);
+    const [isOpenModalDeleteProduct, setIsOpenModalDeleteProduct] = useState<boolean>(false);
     const [products, setProducts] = useState([]);
     const [refetchDataProducts, setRefetchDataProducts] = useState(false);
+    const [isShowAlertSuccess, setIsShowAlertSuccess] = useState<boolean>(false);
+    const [alertMessageSuccess, setAlertMessageSuccess] = useState<string>("");
+    const [selectedId, setSelectedId] = useState<string>("");
+    const [selectedProduct, setSelectedProduct] = useState<IProduct>({
+        ProductID: "",
+        Name: "",
+        Description: "",
+        Price: 0,
+        Stock: 0,
+    });
 
     useEffect(() => {
         const getDataProducts = async () => {
@@ -30,7 +47,7 @@ const DashboardProductPage = () => {
     }, [refetchDataProducts])
 
     return (
-        <div className="p-8 flex flex-col gap-3">
+        <div>
             <div className="flex justify-between mb-5">
                 <div className="flex gap-2">
                     <p>Dashboard</p>
@@ -50,11 +67,27 @@ const DashboardProductPage = () => {
                 <div className="flex justify-end mb-3">
                     <Button 
                         type="button" 
-                        className="bg-black text-white" 
-                        onPress={() => setIsOpenFormCreateProduct(true)}
+                        color="primary"
+                        onPress={() => setIsOpenModalFormCreateProduct(true)}
                     >Add Product</Button>
                 </div>
-                <Table aria-label="Example table with dynamic content">
+                {isShowAlertSuccess && (
+                    <div className="flex items-center justify-center w-full my-2">
+                        <Alert 
+                            color="success" 
+                            title={alertMessageSuccess}
+                            onClose={() => setIsShowAlertSuccess(false)}
+                        />
+                    </div>
+                )}
+                <Table 
+                    isCompact 
+                    isHeaderSticky
+                    aria-label="Example table with dynamic content"
+                    classNames={{
+                        wrapper: `${isShowAlertSuccess ? "max-h-[510px]" : "max-h-[580px]"} overflow-y-scroll`,
+                    }}
+                >
                     <TableHeader>
                         <TableColumn>Name</TableColumn>
                         <TableColumn>Description</TableColumn>
@@ -70,8 +103,33 @@ const DashboardProductPage = () => {
                                     <TableCell>{product.Description}</TableCell>
                                     <TableCell>{product.Price}</TableCell>
                                     <TableCell>{product.Stock}</TableCell>
-                                    <TableCell>
-                                        <Button size="sm" color="danger" className="w-fit">
+                                    <TableCell className="flex gap-2">
+                                        <Button 
+                                            isIconOnly 
+                                            size="sm" 
+                                            color="warning"
+                                            onPress={() => {
+                                                setIsOpenModalFormEditProduct(true)
+                                                setSelectedProduct({
+                                                    ProductID: product.ProductID,
+                                                    Name: product.Name,
+                                                    Description: product.Description,
+                                                    Price: product.Price,
+                                                    Stock: product.Stock,
+                                                });
+                                            }}
+                                        >
+                                            <FaEdit />
+                                        </Button>
+                                        <Button 
+                                            isIconOnly 
+                                            size="sm" 
+                                            color="danger"
+                                            onPress={() => {
+                                                setIsOpenModalDeleteProduct(true)
+                                                setSelectedId(product.ProductID)
+                                            }}
+                                        >
                                             <FaTrashCan />
                                         </Button>
                                     </TableCell>
@@ -81,11 +139,32 @@ const DashboardProductPage = () => {
                     </TableBody>
                 </Table>
             </div>
-            <FormCreateProduct 
-                isOpenFormCreateProduct={isOpenFormCreateProduct} 
-                setIsOpenFormCreateProduct={setIsOpenFormCreateProduct}
+            
+            <ModalFormCreateProduct 
+                isOpenModalFormCreateProduct={isOpenModalFormCreateProduct} 
+                setIsOpenModalFormCreateProduct={setIsOpenModalFormCreateProduct}
                 refetchDataProducts={refetchDataProducts}
                 setRefetchDataProducts={setRefetchDataProducts}
+                setIsShowAlertSuccess={setIsShowAlertSuccess}
+                setAlertMessageSuccess={setAlertMessageSuccess}
+            />
+            <ModalFormEditProduct 
+                isOpenModalFormEditProduct={isOpenModalFormEditProduct} 
+                setIsOpenModalFormEditProduct={setIsOpenModalFormEditProduct}
+                refetchDataProducts={refetchDataProducts}
+                setRefetchDataProducts={setRefetchDataProducts}
+                setIsShowAlertSuccess={setIsShowAlertSuccess}
+                setAlertMessageSuccess={setAlertMessageSuccess}
+                selectedProduct={selectedProduct}
+            />
+            <ModalDeleteProduct 
+                isOpenModalDeleteProduct={isOpenModalDeleteProduct}
+                setIsOpenModalDeleteProduct={setIsOpenModalDeleteProduct}
+                refetchDataProducts={refetchDataProducts}
+                setRefetchDataProducts={setRefetchDataProducts}
+                setIsShowAlertSuccess={setIsShowAlertSuccess}
+                setAlertMessageSuccess={setAlertMessageSuccess}
+                selectedId={selectedId}
             />
         </div>
     )
