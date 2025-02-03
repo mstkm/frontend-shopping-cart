@@ -10,7 +10,11 @@ import * as yup from "yup";
 const schema = yup.object({
     Name: yup.string().required("Please enter your name"),
     Email: yup.string().email("Please enter a valid email").required("Please enter your email"),
-    Password: yup.string().required("Please enter your password"),
+    Password: yup.string().required("Please enter your password")
+                .min(8, "Min 8 character")
+                .matches(/[A-Z]/, "Password must have at least one uppercase letter")
+                .matches(/[a-z]/, "Password must have at least one lowercase letter")
+                .matches(/[\W_]/, "Password must have at least one special character (@#$%^&*)"),
     PasswordConfirmation: yup.string()
         .oneOf([yup.ref('Password'), ""], "Passwords must match")
         .required("Please enter your password confirmation")

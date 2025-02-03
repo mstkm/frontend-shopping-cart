@@ -23,7 +23,9 @@ export default function RootLayout({
       <body className={`${montserrat.className}`}>
         <SessionProvider>
           <QueryClientProvider client={queryClient}>
-            {children}
+            <section>
+              {children}
+            </section>
           </QueryClientProvider>
         </SessionProvider>
       </body>

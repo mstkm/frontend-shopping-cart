@@ -11,7 +11,7 @@ export async function middleware(request: NextRequest) {
 
     const { pathname }  = request.nextUrl;
     // const isAdmin = token.user?.role === "Admin";
-    if (pathname === "/register" || pathname === "/login" || pathname === "/") {
+    if (pathname === "/register" || pathname === "/login") {
         if (token) {
             if (token.user?.role === "Admin") {
                 return NextResponse.redirect(new URL("/dashboard/product", request.url));

@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Form, Input } from "@heroui/react";
+import { Button, Form, Input, Spinner } from "@heroui/react";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -9,14 +9,20 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
+import { useState } from "react";
 
 const schema = yup.object({
     Email: yup.string().email("Please enter a valid email").required("Please enter your email"),
     Password: yup.string().required("Please enter your password")
+                    .min(8, "Min 8 character")
+                    .matches(/[A-Z]/, "Password must have at least one uppercase letter")
+                    .matches(/[a-z]/, "Password must have at least one lowercase letter")
+                    .matches(/[\W_]/, "Password must have at least one special character (@#$%^&*)"),
 }).required();
 
 const LoginPage = () => {
     const router = useRouter();
+    const [errorLogin, setErrorLogin] = useState<string>("");
 
     const { control, handleSubmit, formState: { errors }, reset } = useForm({
         resolver: yupResolver(schema)
@@ -29,20 +35,24 @@ const LoginPage = () => {
             redirect: false,
             callbackUrl
         });
-        console.log(res);
         return res;
     };
 
     const {
         mutate: mutateLogin,
+        isPending: isPendingLogin
     } = useMutation({
         mutationFn: loginService,
-        onSuccess: () => {
-            reset();
-            router.push("/");
+        onSuccess: (res) => {
+            if (res?.ok) {
+                reset();
+                router.push("/");
+            } else {
+                setErrorLogin("Invalid credentials");
+            }
         },
         onError: () => {
-            alert("Ada Error");
+            setErrorLogin("Invalid credentials");
         }
     });
 
@@ -90,12 +100,12 @@ const LoginPage = () => {
                 />
                 
                 <div className="flex justify-end w-full my-4">
-                    <Button type="submit" color="primary">
-                        Submit
+                    <Button className="min-w-full" type={isPendingLogin ? "button" : "submit"} color="primary">
+                        {isPendingLogin ? <Spinner color="white" /> : "Login"}
                     </Button>
                 </div>
 
-                {errors.root && <p className="text-center text-red-800 font-bold">Error: {errors.root?.message}</p>}
+                {(errorLogin !== "") && <p className="w-full text-center text-red-800 font-bold">{errorLogin}</p>}
             </Form>
         </div>
     );

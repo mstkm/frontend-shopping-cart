@@ -93,7 +93,7 @@ const Register = () => {
                 
                 <div className="flex justify-end w-full my-4">
                     <Button className="min-w-full" type={isPendingRegister ? "button" : "submit"} color="primary">
-                        {isPendingRegister ? <Spinner color="white" /> : "Submit"}
+                        {isPendingRegister ? <Spinner color="white" /> : "Register"}
                     </Button>
                 </div>
 
