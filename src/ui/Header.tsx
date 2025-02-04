@@ -1,6 +1,9 @@
 
 import { Search, ShoppingCart, ClipboardList, User, ChevronDown } from "lucide-react";
 import { useState } from "react";
+import { Button } from "@heroui/react";
+import { signOut } from "next-auth/react";
+import { FiLogOut } from "react-icons/fi";
 
 const Header = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -43,7 +46,14 @@ const Header = () => {
                 {isOpen && (
                     <div className="absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow-lg">
                     <a href="#" className="block px-4 py-2 hover:bg-blue-400">Profile</a>
-                    <a href="#" className="block px-4 py-2 hover:bg-blue-400">Logout</a>
+                    {/* <a href="#" className="block px-4 py-2 hover:bg-blue-400">Logout</a> */}
+                    <Button 
+                            className="bg-[#006aca] font-bold text-white"
+                            onPress={() => signOut()}
+                        >
+                            <FiLogOut />
+                            Logout
+                        </Button>
                     </div>
                 )}
                 </div>
