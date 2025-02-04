@@ -14,10 +14,10 @@ import { useState } from "react";
 const schema = yup.object({
     Email: yup.string().email("Please enter a valid email").required("Please enter your email"),
     Password: yup.string().required("Please enter your password")
-                    .min(8, "Min 8 character")
-                    .matches(/[A-Z]/, "Password must have at least one uppercase letter")
-                    .matches(/[a-z]/, "Password must have at least one lowercase letter")
-                    .matches(/[\W_]/, "Password must have at least one special character (@#$%^&*)"),
+                    .min(8, "Password Invalid")
+                    .matches(/[A-Z]/, "Password Invalid")
+                    .matches(/[a-z]/, "Password Invalid")
+                    .matches(/[\W_]/, "Password Invalid"),
 }).required();
 
 const LoginPage = () => {

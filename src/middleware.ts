@@ -10,16 +10,29 @@ export async function middleware(request: NextRequest) {
     }) as IToken;
 
     const { pathname }  = request.nextUrl;
-    // const isAdmin = token.user?.role === "Admin";
+    const isAdmin = token?.user?.role === "admin";
+    
     if (pathname === "/register" || pathname === "/login") {
         if (token) {
-            if (token.user?.role === "Admin") {
+            if (isAdmin) {
                 return NextResponse.redirect(new URL("/dashboard/product", request.url));
             } 
         } 
     } else {
         if (!token) {
             return NextResponse.redirect(new URL("/login", request.url));
+        }
+    }
+
+    if (pathname === "/") {
+        if (isAdmin) {
+            return NextResponse.redirect(new URL("/dashboard/product", request.url));
+        } 
+    }
+
+    if (pathname.startsWith("/dashboard")) {
+        if (!isAdmin) {
+            return NextResponse.redirect(new URL("/", request.url));
         }
     }
     
