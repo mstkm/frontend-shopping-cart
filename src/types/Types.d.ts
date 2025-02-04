@@ -69,3 +69,10 @@ export interface IFromDataAddress {
     State: string;
     ZipCode: string;
 }
+
+export interface IOrder {
+    OrderID?: number;
+    CartID: number;
+    OrderDate: string;
+    TotalAmount: number;
+}
