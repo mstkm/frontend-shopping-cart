@@ -27,12 +27,14 @@ export async function middleware(request: NextRequest) {
     if (pathname === "/") {
         if (isAdmin) {
             return NextResponse.redirect(new URL("/dashboard/product", request.url));
-        } 
+        } else {
+            return NextResponse.redirect(new URL("/product", request.url));
+        }
     }
 
     if (pathname.startsWith("/dashboard")) {
         if (!isAdmin) {
-            return NextResponse.redirect(new URL("/", request.url));
+            return NextResponse.redirect(new URL("/product", request.url));
         }
     }
     
