@@ -16,7 +16,9 @@ export async function middleware(request: NextRequest) {
         if (token) {
             if (isAdmin) {
                 return NextResponse.redirect(new URL("/dashboard/product", request.url));
-            } 
+            } else {
+                return NextResponse.redirect(new URL("/product", request.url));
+            }
         } 
     } else {
         if (!token) {
