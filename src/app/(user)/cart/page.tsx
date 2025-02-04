@@ -1,7 +1,7 @@
 "use client";
-import cartItemServices from "@/services/cartItemServices";
-import { ICartItem, IFromDataAddress } from "@/types/Types";
-import { Button, Card, CardBody, Form, Input, Spinner } from "@heroui/react";
+
+import { ICartItem, IFromDataAddress, IUpdateCartItem } from "@/types/Types";
+import { Alert, Button, Card, CardBody, Form, Input, Spinner } from "@heroui/react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -12,6 +12,9 @@ import orderServices from "@/services/orderServices";
 import addressServices from "@/services/addressServices";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { FaTrashCan } from "react-icons/fa6";
+import cartItemServices from "@/services/cartItemServices";
+import { formatRupiah } from "@/lib/helper";
 
 const schema = yup.object({
     AddressLine1: yup.string().required("Please enter your address line 1"),
@@ -26,6 +29,11 @@ const CartPage = () => {
     const router = useRouter();
     const [cartItems, setCartItems] = useState<ICartItem[]>([]);
     const [totalPrice, setTotalPrice] = useState<number | null>(null);
+    const [refetchCartItems, setRefetchCartItems] = useState<boolean>(false);
+    const [showAlert, setShowAlert] = useState<boolean>(false);
+    const [deleteId, setDeleteId] = useState<number>(0);
+    const [alertTitle, setAlertTitle] = useState<string>("");
+    const [isPendingBuy, setIsPendingBuy] = useState<boolean>(false);
 
     useEffect(() => {
         const getCartItems = async () => {
@@ -40,7 +48,7 @@ const CartPage = () => {
             setTotalPrice(total);
         }
         getCartItems();
-    }, []);
+    }, [refetchCartItems]);
 
     const { control, handleSubmit, formState: { errors }, reset } = useForm({
         resolver: yupResolver(schema)
@@ -58,24 +66,70 @@ const CartPage = () => {
 
     const {
         mutate: mutateBuy,
-        isPending: isPendingBuy
     } = useMutation({
         mutationFn: buyService,
-        onSuccess: (res) => {
+        onSuccess: () => {
             reset();
-            console.log(res)
+            setIsPendingBuy(false);
             router.push("/success-order");
         },
         onError: (error) => {
             console.log(error);
+            setIsPendingBuy(false);
         }
     });
     
-    const handleLogin = (data: IFromDataAddress) => mutateBuy(data);
+    const handleLogin = (data: IFromDataAddress) => {
+        setIsPendingBuy(true);
+        mutateBuy(data);
+    };
+
+    const deleteCartItemService = async (selectedIdDelete: number) => {
+        const res = await cartItemServices.delete(selectedIdDelete);
+        return res;
+    }
+
+    const {
+        mutate: mutateDeleteCartItem,
+        isPending: isPendingDeleteCartItem
+    } = useMutation({
+        mutationFn: deleteCartItemService,
+        onSuccess: (data) => {
+            console.log(data);
+            setAlertTitle("Success delete cart item")
+            setShowAlert(true);
+            setRefetchCartItems(!refetchCartItems);
+        },
+        onError: (error) => {
+            console.log(error)
+        }
+    })
+    
+    const handleDeleteCartItem = (selectedIdDelete: number) => mutateDeleteCartItem(selectedIdDelete);
+
+    const handleChangeQuantity = async (data: IUpdateCartItem, cartId: number) => {
+        try {
+            await cartItemServices.update(data, cartId);
+            setRefetchCartItems(!refetchCartItems);
+        } catch (error) {
+            console.error(error);
+            setRefetchCartItems(!refetchCartItems);
+        }
+    }
 
     return (
         <main className="flex gap-5">
             <div className="flex-1 flex flex-col gap-2">
+                {showAlert && (
+                    <div className="flex items-center justify-center w-full">
+                        <Alert 
+                            color="success" 
+                            title={alertTitle} 
+                            isVisible={showAlert}
+                            onClose={() => setShowAlert(false)}
+                        />
+                    </div>
+                )}
                 {!cartItems.length && (
                     <p>No Items <Link href="/product" className="text-blue-800">Go to Product Page</Link></p>
                 )}
@@ -93,12 +147,49 @@ const CartPage = () => {
                                                 height={200}
                                             />
                                         </div>
-                                        <div className="flex flex-col justify-between">
+                                        <div className="flex flex-col justify-between w-full">
                                             <div>
                                                 <p className="font-bold text-xl">{cartItem.Products?.Name}</p>
                                                 <p>{cartItem.Products?.Description}</p>
                                             </div>
-                                            <div>Harga: {cartItem.Products?.Price} x {cartItem.Quantity} = {Number(cartItem.Products?.Price)*cartItem.Quantity}</div>
+                                            <div className="flex justify-between">
+                                                <div className="flex items-center gap-3"> 
+                                                    <div>{formatRupiah(Number(cartItem.Products?.Price))}</div>
+                                                    <div>x</div>
+                                                    <div>
+                                                        <input 
+                                                            className="text-center w-16 py-2 bg-gray-100 rounded-lg focus:outline-none"
+                                                            type="number"
+                                                            defaultValue={Number(cartItem.Quantity)}
+                                                            onBlur={(e) => {
+                                                                const data = {
+                                                                    Quantity: Number(e.target.value),
+                                                                    ProductID: Number(cartItem.ProductID),
+                                                                    CartID: Number(cartItem.CartID),
+                                                                }
+                                                                const cartId = Number(cartItem.CartItemID);
+                                                               
+                                                                handleChangeQuantity(data, cartId);
+                                                            }}
+                                                        />    
+                                                    </div> 
+                                                    <div>=</div> 
+                                                    <div><span className="font-bold">{formatRupiah(Number(cartItem.Products?.Price)*cartItem.Quantity)}</span></div>
+                                                </div>
+                                                <div>
+                                                    <Button 
+                                                        color="danger" 
+                                                        size="sm"
+                                                        isDisabled={(isPendingDeleteCartItem && (Number(cartItem.CartItemID) === Number(deleteId)))}
+                                                        onPress={() => {
+                                                            handleDeleteCartItem(Number(cartItem.CartItemID));
+                                                            setDeleteId(Number(cartItem.CartItemID))
+                                                        }}
+                                                    >{(isPendingDeleteCartItem && (Number(cartItem.CartItemID) === Number(deleteId))) ? <Spinner /> : (
+                                                        <div className="flex gap-2 items-center justify-center"><FaTrashCan /> Delete</div>
+                                                    )}</Button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </CardBody>
@@ -110,7 +201,7 @@ const CartPage = () => {
             <div className="w-[24rem]">
                 <Card className="px-4 py-2">
                     <CardBody>
-                        <p className="font-bold">Your Address</p>
+                        <p className="font-bold mb-2">Your Address</p>
                         <Form
                             className="w-80 flex flex-col"
                             onSubmit={handleSubmit(handleLogin)}
@@ -190,7 +281,7 @@ const CartPage = () => {
                                     />
                                 )}
                             />
-                            <p className="text-2xl font-bold">total: Rp{totalPrice}</p>
+                            <p className="text-2xl font-bold my-2">Total: {formatRupiah(Number(totalPrice))}</p>
                             <div className="flex justify-end w-full my-4">
                                 <Button 
                                     className="min-w-full" 

@@ -69,3 +69,9 @@ export interface IFromDataAddress {
     State: string;
     ZipCode: string;
 }
+
+export interface IUpdateCartItem {
+    Quantity: number;
+    ProductID: number;
+    CartID: number;
+}
