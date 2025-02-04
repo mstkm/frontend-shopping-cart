@@ -5,9 +5,6 @@ import "../globals.css";
 import { Montserrat } from "next/font/google";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Button } from "@heroui/react";
-import { signOut } from "next-auth/react";
-import { FiLogOut } from "react-icons/fi";
 import { TbBrandDatabricks } from "react-icons/tb";
 import { LuShoppingBag } from "react-icons/lu";
 import { BsFillPeopleFill } from "react-icons/bs";
@@ -64,15 +61,6 @@ const AdminLayout = ({ children }: PropTypes) => {
                                 </div>
                             </Link>
                         </div>
-                    </div>
-                    <div className="flex items-center justify-center">
-                        <Button 
-                            className="bg-[#006aca] font-bold text-white"
-                            onPress={() => signOut()}
-                        >
-                            <FiLogOut />
-                            Logout
-                        </Button>
                     </div>
                 </div>
                 <div className="h-screen w-full px-8 py-4">

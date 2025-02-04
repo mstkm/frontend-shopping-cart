@@ -1,3 +1,4 @@
+import { formatNumber, formatRupiah } from "@/lib/helper";
 import productServices from "@/services/productServices";
 import { IFormDataProduct, IProduct } from "@/types/Types";
 import {  
@@ -136,14 +137,17 @@ const ModalFormEditProduct = ({
                                 render={({ field }) => (
                                     <Input
                                         {...field}
-                                        type="number"
+                                        type="text"
                                         label="Price"
                                         variant="bordered"
                                         autoComplete="off"
                                         isInvalid={errors.Price !== undefined}
                                         errorMessage={errors.Price?.message}
-                                        value={field.value?.toString() || ""}
-                                        onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : "")}
+                                        value={field.value ? formatRupiah(field.value) : ""}
+                                        onChange={(e) => {
+                                            const rawValue = e.target.value.replace(/\D/g, ""); // Hanya angka
+                                            field.onChange(rawValue ? Number(rawValue) : "");
+                                        }}
                                     />
                                 )}
                             />
@@ -153,14 +157,17 @@ const ModalFormEditProduct = ({
                             render={({ field }) => (
                                 <Input
                                     {...field}
-                                    type="number"
+                                    type="text"
                                     label="Stock"
                                     variant="bordered"
                                     autoComplete="off"
                                     isInvalid={errors.Stock !== undefined}
                                     errorMessage={errors.Stock?.message}
-                                    value={field.value?.toString() || ""}
-                                    onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : "")}
+                                    value={field.value ? formatNumber(field.value) : ""}
+                                    onChange={(e) => {
+                                        const rawValue = e.target.value.replace(/\D/g, ""); 
+                                        field.onChange(rawValue ? Number(rawValue) : "");
+                                    }}
                                 />
                             )}
                         />

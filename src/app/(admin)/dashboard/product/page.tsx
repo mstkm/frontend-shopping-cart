@@ -1,7 +1,9 @@
 "use client"
 
+import { formatNumber, formatRupiah } from "@/lib/helper";
 import productServices from "@/services/productServices";
 import { IProduct } from "@/types/Types";
+import HeaderAdmin from "@/ui/HeaderAdmin";
 import ModalDeleteProduct from "@/ui/product/ModalDeleteProduct";
 import ModalFormCreateProduct from "@/ui/product/ModalFormCreateProduct";
 import ModalFormEditProduct from "@/ui/product/ModalFormEditProduct";
@@ -17,7 +19,6 @@ import {
     Pagination,
 } from "@heroui/react";
 import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { FaRegTrashCan, FaPenToSquare } from "react-icons/fa6";
 
@@ -48,7 +49,7 @@ const DashboardProductPage = () => {
     }, [refetchDataProducts])
 
     const [page, setPage] = useState(1);
-    const rowsPerPage = 10;
+    const rowsPerPage = 5;
     const pages = Math.ceil(products.length / rowsPerPage);
 
     const dataProducts = useMemo(() => {
@@ -60,21 +61,7 @@ const DashboardProductPage = () => {
 
     return (
         <div>
-            <div className="flex justify-between mb-5">
-                <div className="flex gap-2">
-                    <p>Dashboard</p>
-                    <p>/</p>
-                    <Link href="/dashboard/product" className="font-bold">Product</Link>
-                </div>
-                <div>
-                    <Image 
-                        src="/images/user.png"
-                        alt="User"
-                        width={30}
-                        height={30}
-                    />
-                </div>
-            </div>
+            <HeaderAdmin />
             <div>
                 <div className="flex justify-end mb-3">
                     <Button 
@@ -97,16 +84,13 @@ const DashboardProductPage = () => {
                     isCompact 
                     isHeaderSticky
                     aria-label="Example table with dynamic content"
-                    classNames={{
-                        wrapper: `${isShowAlertSuccess ? "max-h-[510px]" : "max-h-[580px]"} overflow-y-scroll`,
-                    }}
-                    bottomContent={
+                    topContent={
                         <div className="flex w-full justify-center">
                           <Pagination
                             isCompact
                             showControls
                             showShadow
-                            color="secondary"
+                            color="primary"
                             page={page}
                             total={pages}
                             onChange={(page) => setPage(page)}
@@ -128,8 +112,8 @@ const DashboardProductPage = () => {
                                 <TableRow key={product.ProductID}>
                                     <TableCell>{product.Name}</TableCell>
                                     <TableCell>{product.Description}</TableCell>
-                                    <TableCell>{product.Price}</TableCell>
-                                    <TableCell>{product.Stock}</TableCell>
+                                    <TableCell>{formatRupiah(Number(product.Price))}</TableCell>
+                                    <TableCell>{formatNumber(Number(product.Stock))}</TableCell>
                                     <TableCell>{product.Picture ? (
                                         <Image 
                                             src={`${baseUrlApi}/uploads/${product?.Picture}`}
