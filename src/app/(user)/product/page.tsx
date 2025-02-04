@@ -1,6 +1,6 @@
 "use client";
 
-import { formatRupiah } from "@/lib/helper";
+import { formatRupiah, truncateText } from "@/lib/helper";
 import cartItemServices from "@/services/cartItemServices";
 import cartServices from "@/services/cartServices";
 import productServices from "@/services/productServices";
@@ -26,13 +26,13 @@ const ProductPage = () => {
 
     const addCartItemService = async (data: ICartItem) => {
         try {
-            const resCreateCartItem = await cartItemServices.create(data);
-            if (resCreateCartItem.status == 200) {
-                setIsShowAlertSuccess(true);
-                setAlertMessageSuccess("Success add to cart");
-            }
+            await cartItemServices.create(data);
+            setIsShowAlertSuccess(true);
+            setAlertMessageSuccess("Success add to cart");
         } catch (error) {
             console.error(error);
+            setIsShowAlertSuccess(false);
+            setAlertMessageSuccess("");
         }
     }
 
@@ -82,19 +82,25 @@ const ProductPage = () => {
                 {products.map((product: IProduct) => {
                     return (
                         <Card key={product.ProductID}>
-                            <CardBody className="flex flex-col gap-2">
-                                <Image
-                                    src={`${baseUrlApi}/uploads/${product?.Picture}`}
-                                    alt="Picture"
-                                    width={300}
-                                    height={300}
-                                />
-                                <p>{product.Name}</p>
-                                <p>{formatRupiah(Number(product.Price))}</p>
-                                <Button
-                                    color="primary"
-                                    onPress={() => handleAddCart(Number(product.ProductID))}
-                                ><HiOutlineShoppingCart /> Add to cart</Button>
+                            <CardBody className="flex flex-col justify-between gap-2">
+                                <div>
+                                    <Image
+                                        src={`${baseUrlApi}/uploads/${product?.Picture}`}
+                                        alt="Picture"
+                                        width={300}
+                                        height={300}
+                                    />
+                                    <p className="text-xl font-bold">{product.Name}</p>
+                                    <p>{truncateText(product.Description)}</p>
+                                </div>
+                                <div className="w-full">
+                                    <p className="text-lg font-semibold text-end">{formatRupiah(Number(product.Price))}</p>
+                                    <Button
+                                        color="primary"
+                                        className="w-full mt-3"
+                                        onPress={() => handleAddCart(Number(product.ProductID))}
+                                    ><HiOutlineShoppingCart /> Add to cart</Button>
+                                </div>
                             </CardBody>
                         </Card>
                     )

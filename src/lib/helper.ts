@@ -11,3 +11,8 @@ export const formatNumber = (value: number) => {
     if (!value) return "";
     return new Intl.NumberFormat("id-ID").format(value);
 };
+
+export const truncateText = (text: string) => {
+    const max = 50;
+    return `${text.substring(0, max)}${text.length > max ? "..." : ""}`;
+}
