@@ -4,9 +4,9 @@ import Header from "@/ui/Header";
 
 export default function Home() {
   return (
-    <div className="h-min-screen h-screen flex flex-col">
+    <div className="flex flex-col h-screen">
       <Header />
-      <main className="p-8 flex-1">
+      <main className="flex-1 p-8">
         <h1 className="text-3xl font-bold">Halaman Product</h1>
       </main>
       <Footer/>
