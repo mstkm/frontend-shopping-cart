@@ -14,10 +14,11 @@ import {
     TableRow,
     TableCell,
     Alert,
+    Pagination,
 } from "@heroui/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FaRegTrashCan, FaPenToSquare } from "react-icons/fa6";
 
 const DashboardProductPage = () => {
@@ -45,6 +46,17 @@ const DashboardProductPage = () => {
         }
         getDataProducts();
     }, [refetchDataProducts])
+
+    const [page, setPage] = useState(1);
+    const rowsPerPage = 10;
+    const pages = Math.ceil(products.length / rowsPerPage);
+
+    const dataProducts = useMemo(() => {
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+    
+        return products.slice(start, end);
+    }, [page, products]);
 
     return (
         <div>
@@ -88,6 +100,19 @@ const DashboardProductPage = () => {
                     classNames={{
                         wrapper: `${isShowAlertSuccess ? "max-h-[510px]" : "max-h-[580px]"} overflow-y-scroll`,
                     }}
+                    bottomContent={
+                        <div className="flex w-full justify-center">
+                          <Pagination
+                            isCompact
+                            showControls
+                            showShadow
+                            color="secondary"
+                            page={page}
+                            total={pages}
+                            onChange={(page) => setPage(page)}
+                          />
+                        </div>
+                      }
                 >
                     <TableHeader>
                         <TableColumn>Name</TableColumn>
@@ -98,7 +123,7 @@ const DashboardProductPage = () => {
                         <TableColumn>Actions</TableColumn>
                     </TableHeader>
                     <TableBody>
-                        {products.map((product: IProduct) => {
+                        {dataProducts.map((product: IProduct) => {
                             return (
                                 <TableRow key={product.ProductID}>
                                     <TableCell>{product.Name}</TableCell>
@@ -139,7 +164,7 @@ const DashboardProductPage = () => {
                                             color="danger"
                                             onPress={() => {
                                                 setIsOpenModalDeleteProduct(true)
-                                                setSelectedId(product.ProductID)
+                                                setSelectedId(`${product.ProductID}`)
                                             }}
                                         >
                                             <FaRegTrashCan />
