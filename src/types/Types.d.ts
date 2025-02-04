@@ -76,3 +76,9 @@ export interface IOrder {
     OrderDate: string;
     TotalAmount: number;
 }
+
+export interface IUpdateCartItem {
+    Quantity: number;
+    ProductID: number;
+    CartID: number;
+}

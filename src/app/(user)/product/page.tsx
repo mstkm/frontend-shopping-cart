@@ -1,8 +1,8 @@
 "use client";
 
+import { formatRupiah, truncateText } from "@/lib/helper";
 import cartItemServices from "@/services/cartItemServices";
 import cartServices from "@/services/cartServices";
-// import orderServices from "@/services/orderServices";
 import productServices from "@/services/productServices";
 import { ICart, ICartItem, IProduct } from "@/types/Types";
 import { Alert, Button, Card, CardBody } from "@heroui/react";
@@ -26,17 +26,13 @@ const ProductPage = () => {
 
     const addCartItemService = async (data: ICartItem) => {
         try {
-            const resCreateCartItem = await cartItemServices.create(data);
-            if (resCreateCartItem.status == 200) {
-                setIsShowAlertSuccess(true);
-                setAlertMessageSuccess("Success add to cart");
-            }
-            setTimeout(() => {
-                setIsShowAlertSuccess(false);
-                setAlertMessageSuccess("");
-            }, 3000);
+            await cartItemServices.create(data);
+            setIsShowAlertSuccess(true);
+            setAlertMessageSuccess("Success add to cart");
         } catch (error) {
             console.error(error);
+            setIsShowAlertSuccess(false);
+            setAlertMessageSuccess("");
         }
     }
 
@@ -71,37 +67,45 @@ const ProductPage = () => {
         addCartService(productId);
     }
 
-
     return (
-        <main className="flex gap-2 flex-wrap">
+        <main>
             <div className="flex items-center justify-center w-full">
                 <Alert 
+                    className="mb-3"
                     color="success" 
                     title={alertMessageSuccess}                 
                     isVisible={isShowAlertSuccess}
                     onClose={() => setIsShowAlertSuccess(false)}
                 />
             </div>
-            {products.map((product: IProduct) => {
-                return (
-                    <Card key={product.ProductID}>
-                        <CardBody className="flex flex-col gap-2">
-                            <Image
-                                src={`${baseUrlApi}/uploads/${product?.Picture}`}
-                                alt="Picture"
-                                width={300}
-                                height={300}
-                            />
-                            <p>{product.Name}</p>
-                            <p>Rp{product.Price}</p>
-                            <Button
-                                color="primary"
-                                onPress={() => handleAddCart(Number(product.ProductID))}
-                            ><HiOutlineShoppingCart /> Add to cart</Button>
-                        </CardBody>
-                    </Card>
-                )
-            })}
+            <div className="grid grid-cols-5 gap-4 min-h-[calc(100vh-350px)]">
+                {products.map((product: IProduct) => {
+                    return (
+                        <Card key={product.ProductID}>
+                            <CardBody className="flex flex-col justify-between gap-2">
+                                <div>
+                                    <Image
+                                        src={`${baseUrlApi}/uploads/${product?.Picture}`}
+                                        alt="Picture"
+                                        width={300}
+                                        height={300}
+                                    />
+                                    <p className="text-xl font-bold">{product.Name}</p>
+                                    <p>{truncateText(product.Description)}</p>
+                                </div>
+                                <div className="w-full">
+                                    <p className="text-lg font-semibold text-end">{formatRupiah(Number(product.Price))}</p>
+                                    <Button
+                                        color="primary"
+                                        className="w-full mt-3"
+                                        onPress={() => handleAddCart(Number(product.ProductID))}
+                                    ><HiOutlineShoppingCart /> Add to cart</Button>
+                                </div>
+                            </CardBody>
+                        </Card>
+                    )
+                })}
+            </div>
         </main>
     )
 }
