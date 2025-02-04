@@ -19,7 +19,7 @@ const Register = () => {
     return (
         <div>
             <div className="mb-4">
-                <h1 className="text-3xl font-bold">Register</h1>
+                <h1 className="text-2xl font-bold text-blue-500">Register</h1>
                 <p>Have an account? <Link href="/login" className="text-blue-500 font-semibold">Login here</Link></p>
             </div>
             <Form

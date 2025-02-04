@@ -46,7 +46,7 @@ const LoginPage = () => {
         onSuccess: (res) => {
             if (res?.ok) {
                 reset();
-                router.push("/dashboard");
+                router.push("/");
             } else {
                 setErrorLogin("Invalid credentials");
             }
@@ -61,7 +61,7 @@ const LoginPage = () => {
     return (
         <div>
             <div className="mb-4">
-                <h1 className="text-3xl font-bold">Login</h1>
+                <h1 className="text-2xl font-bold text-blue-500">Welcome Back</h1>
                 <p>Don&apos;t have an account <Link href="/register" className="text-blue-500 font-semibold">Register here</Link></p>
             </div>
             <Form

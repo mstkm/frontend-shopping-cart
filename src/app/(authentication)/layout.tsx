@@ -15,11 +15,11 @@ const montserrat = Montserrat({
 const AuthLayout = ({ children }: PropTypes) => {
     return (
         <div className={`${montserrat.className} h-screen flex gap-20`}>
-            <div className="flex-1 flex justify-end items-center">
+            <div className="flex-1 flex justify-start items-center">
                 <Image 
-                    src="/images/ilustrasi-online-shop.png"
-                    alt="ilustrasi-online-shop"
-                    width={500}
+                    src="/images/shopping.png"
+                    alt="ilustrasi-shopping"
+                    width={607}
                     height={500}
                 />
             </div>
