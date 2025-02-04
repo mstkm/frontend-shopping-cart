@@ -1,16 +1,15 @@
-import { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Shopping Cart",
-  description: "Welcome to Shopping Cart",
-};
+"use client"
+import Footer from "@/ui/Footer";
+import Header from "@/ui/Header";
 
 export default function Home() {
   return (
-    <div className="p-8">
-      <div>
+    <div className="h-min-screen h-screen flex flex-col">
+      <Header />
+      <main className="p-8 flex-1">
         <h1 className="text-3xl font-bold">Halaman Product</h1>
-      </div>
+      </main>
+      <Footer/>
     </div>
   );
 }
