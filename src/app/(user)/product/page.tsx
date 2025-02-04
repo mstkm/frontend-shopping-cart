@@ -90,7 +90,7 @@ const ProductPage = () => {
                                 src={`${baseUrlApi}/uploads/${product?.Picture}`}
                                 alt="Picture"
                                 width={300}
-                                height={500}
+                                height={300}
                             />
                             <p>{product.Name}</p>
                             <p>Rp{product.Price}</p>
