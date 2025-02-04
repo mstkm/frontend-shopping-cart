@@ -42,7 +42,7 @@ const UserLayout = ({ children }: PropTypes) => {
                     {/* Menu */}
                     <div className="flex gap-8 items-center">
                         <button className="flex items-center space-x-2 hover:text-blue-600">
-                            <ClipboardList size={24} />
+                            <Link href="history"><ClipboardList size={24} /></Link>
                         </button>
 
                         <button className="flex items-center space-x-2 hover:text-blue-600">

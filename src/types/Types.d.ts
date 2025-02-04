@@ -70,6 +70,13 @@ export interface IFromDataAddress {
     ZipCode: string;
 }
 
+export interface IOrder {
+    OrderID?: number;
+    CartID: number;
+    OrderDate: string;
+    TotalAmount: number;
+}
+
 export interface IUpdateCartItem {
     Quantity: number;
     ProductID: number;
