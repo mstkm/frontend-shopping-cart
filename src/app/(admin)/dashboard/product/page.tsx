@@ -76,6 +76,7 @@ const DashboardProductPage = () => {
                         <Alert 
                             color="success" 
                             title={alertMessageSuccess}
+                            isVisible={isShowAlertSuccess}
                             onClose={() => setIsShowAlertSuccess(false)}
                         />
                     </div>

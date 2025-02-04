@@ -36,10 +36,36 @@ export interface IFormDataProduct {
 }
 
 export interface IProduct {
-    ProductID: string;
+    ProductID?: string;
     Name: string;
     Description: string;
     Price: number;
     Stock: number;
     Picture?: AnyPresentValue;
+    CreatedAt?: string;
+    UpdatedAt?: string;
+}
+
+export interface ICart {
+    CartID?: number;
+    CreatedAt: string;
+    UpdatedAt: string;
+    isActive: boolean;
+}
+
+export interface ICartItem {
+    CartItemID?: number;
+    CartID: number;
+    ProductID: number;
+    Quantity: number;
+    Products?: IProduct;
+}
+
+export interface IFromDataAddress {
+    CartID?: number;
+    AddressLine1: string;
+    AddressLine2?: string;
+    City: string;
+    State: string;
+    ZipCode: string;
 }
