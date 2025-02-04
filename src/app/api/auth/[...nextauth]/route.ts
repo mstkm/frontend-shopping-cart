@@ -38,6 +38,9 @@ const authOptions: NextAuthOptions = {
             },
         }),
     ],
+    pages: {
+        signOut: "http://localhost:3001"
+    },
     callbacks: {
         async jwt({ token, user }: {
             token: IToken;
@@ -58,6 +61,9 @@ const authOptions: NextAuthOptions = {
             }
 
             return session;
+        },
+        async redirect({ url, baseUrl }) {
+            return url.startsWith(baseUrl) ? url : "http://localhost:3001";
         },
     },
 };
