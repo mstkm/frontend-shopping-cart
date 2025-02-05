@@ -1,7 +1,7 @@
 "use client";
 
 import { ICartItem, IFromDataAddress, IUpdateCartItem } from "@/types/Types";
-import { Alert, Button, Card, CardBody, Form, Input, Spinner } from "@heroui/react";
+import { Button, Card, CardBody, Form, Input, Spinner } from "@heroui/react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { FaTrashCan } from "react-icons/fa6";
 import cartItemServices from "@/services/cartItemServices";
 import { formatRupiah } from "@/lib/helper";
+import Swal from "sweetalert2";
 
 const schema = yup.object({
     AddressLine1: yup.string().required("Please enter your address line 1"),
@@ -30,9 +31,7 @@ const CartPage = () => {
     const [cartItems, setCartItems] = useState<ICartItem[]>([]);
     const [totalPrice, setTotalPrice] = useState<number | null>(null);
     const [refetchCartItems, setRefetchCartItems] = useState<boolean>(false);
-    const [showAlert, setShowAlert] = useState<boolean>(false);
     const [deleteId, setDeleteId] = useState<number>(0);
-    const [alertTitle, setAlertTitle] = useState<string>("");
     const [isPendingBuy, setIsPendingBuy] = useState<boolean>(false);
 
     useEffect(() => {
@@ -94,14 +93,22 @@ const CartPage = () => {
         isPending: isPendingDeleteCartItem
     } = useMutation({
         mutationFn: deleteCartItemService,
-        onSuccess: (data) => {
-            console.log(data);
-            setAlertTitle("Success delete cart item")
-            setShowAlert(true);
+        onSuccess: () => {
+            Swal.fire({
+                title: "Success!",
+                text: "Success delete cart item!",
+                icon: "success",
+                confirmButtonText: "OK"
+            });
             setRefetchCartItems(!refetchCartItems);
         },
         onError: (error) => {
-            console.log(error)
+            Swal.fire({
+                title: "Error!",
+                text: error.message,
+                icon: "error",
+                confirmButtonText: "OK"
+            });
         }
     })
     
@@ -120,16 +127,6 @@ const CartPage = () => {
     return (
         <main className="flex gap-5">
             <div className="flex-1 flex flex-col gap-2">
-                {showAlert && (
-                    <div className="flex items-center justify-center w-full">
-                        <Alert 
-                            color="success" 
-                            title={alertTitle} 
-                            isVisible={showAlert}
-                            onClose={() => setShowAlert(false)}
-                        />
-                    </div>
-                )}
                 {!cartItems.length && (
                     <p>No Items <Link href="/product" className="text-blue-800">Go to Product Page</Link></p>
                 )}

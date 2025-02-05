@@ -15,7 +15,6 @@ import {
     TableBody,
     TableRow,
     TableCell,
-    Alert,
     Pagination,
 } from "@heroui/react";
 import Image from "next/image";
@@ -29,8 +28,6 @@ const DashboardProductPage = () => {
     const [isOpenModalDeleteProduct, setIsOpenModalDeleteProduct] = useState<boolean>(false);
     const [products, setProducts] = useState([]);
     const [refetchDataProducts, setRefetchDataProducts] = useState(false);
-    const [isShowAlertSuccess, setIsShowAlertSuccess] = useState<boolean>(false);
-    const [alertMessageSuccess, setAlertMessageSuccess] = useState<string>("");
     const [selectedId, setSelectedId] = useState<string>("");
     const [selectedProduct, setSelectedProduct] = useState<IProduct>({
         ProductID: "",
@@ -49,7 +46,7 @@ const DashboardProductPage = () => {
     }, [refetchDataProducts])
 
     const [page, setPage] = useState(1);
-    const rowsPerPage = 5;
+    const rowsPerPage = 7;
     const pages = Math.ceil(products.length / rowsPerPage);
 
     const dataProducts = useMemo(() => {
@@ -70,16 +67,6 @@ const DashboardProductPage = () => {
                         onPress={() => setIsOpenModalFormCreateProduct(true)}
                     >Add Product</Button>
                 </div>
-                {isShowAlertSuccess && (
-                    <div className="flex items-center justify-center w-full my-2">
-                        <Alert 
-                            color="success" 
-                            title={alertMessageSuccess}
-                            isVisible={isShowAlertSuccess}
-                            onClose={() => setIsShowAlertSuccess(false)}
-                        />
-                    </div>
-                )}
                 <Table 
                     isCompact 
                     isHeaderSticky
@@ -166,16 +153,12 @@ const DashboardProductPage = () => {
                 setIsOpenModalFormCreateProduct={setIsOpenModalFormCreateProduct}
                 refetchDataProducts={refetchDataProducts}
                 setRefetchDataProducts={setRefetchDataProducts}
-                setIsShowAlertSuccess={setIsShowAlertSuccess}
-                setAlertMessageSuccess={setAlertMessageSuccess}
             />
             <ModalFormEditProduct 
                 isOpenModalFormEditProduct={isOpenModalFormEditProduct} 
                 setIsOpenModalFormEditProduct={setIsOpenModalFormEditProduct}
                 refetchDataProducts={refetchDataProducts}
                 setRefetchDataProducts={setRefetchDataProducts}
-                setIsShowAlertSuccess={setIsShowAlertSuccess}
-                setAlertMessageSuccess={setAlertMessageSuccess}
                 selectedProduct={selectedProduct}
             />
             <ModalDeleteProduct 
@@ -183,8 +166,6 @@ const DashboardProductPage = () => {
                 setIsOpenModalDeleteProduct={setIsOpenModalDeleteProduct}
                 refetchDataProducts={refetchDataProducts}
                 setRefetchDataProducts={setRefetchDataProducts}
-                setIsShowAlertSuccess={setIsShowAlertSuccess}
-                setAlertMessageSuccess={setAlertMessageSuccess}
                 selectedId={selectedId}
             />
         </div>

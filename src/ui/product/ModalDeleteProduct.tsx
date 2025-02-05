@@ -9,14 +9,13 @@ import {
 } from "@heroui/react";
 import { useMutation } from "@tanstack/react-query";
 import { Dispatch, SetStateAction, useState } from "react";
+import Swal from "sweetalert2";
 
 interface PropTypes {
     isOpenModalDeleteProduct: boolean;
     setIsOpenModalDeleteProduct: Dispatch<SetStateAction<boolean>>;
     refetchDataProducts: boolean;
     setRefetchDataProducts: Dispatch<SetStateAction<boolean>>;
-    setIsShowAlertSuccess: Dispatch<SetStateAction<boolean>>;
-    setAlertMessageSuccess: Dispatch<SetStateAction<string>>;
     selectedId: string;
 }
 
@@ -25,8 +24,6 @@ const ModalDeleteProduct = ({
     setIsOpenModalDeleteProduct,
     refetchDataProducts,
     setRefetchDataProducts,
-    setIsShowAlertSuccess,
-    setAlertMessageSuccess,
     selectedId
 }: PropTypes) => {
     const [errorCreateProduct, setErrorDeleteProduct] = useState<string>("");
@@ -44,11 +41,21 @@ const ModalDeleteProduct = ({
         onSuccess: () => {
             setRefetchDataProducts(!refetchDataProducts);
             setIsOpenModalDeleteProduct(false);
-            setIsShowAlertSuccess(true);
-            setAlertMessageSuccess("Success delete product!")
+            Swal.fire({
+                title: "Success!",
+                text: "Success delete product!",
+                icon: "success",
+                confirmButtonText: "OK"
+            });
         },
         onError: (error) => {
             setErrorDeleteProduct(error.message);
+            Swal.fire({
+                title: "Error!",
+                text: error.message,
+                icon: "error",
+                confirmButtonText: "OK"
+            });
         }
     });
 
@@ -68,11 +75,11 @@ const ModalDeleteProduct = ({
                         <ModalBody>
                             <p className="text-center">Are you sure?</p>
                             <div className="flex gap-2 justify-end w-full my-4">
-                                <Button color="danger" onPress={onClose}>
+                                <Button color="primary" variant="bordered" onPress={onClose}>
                                     Close
                                 </Button>
                                 <Button 
-                                    color="primary"
+                                    color="danger"
                                     isDisabled={isPendingCreateProduct} 
                                     onPress={() => handleDeleteProduct(selectedId)}
                                 >

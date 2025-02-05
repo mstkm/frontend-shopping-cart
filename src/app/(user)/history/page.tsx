@@ -11,6 +11,7 @@ import { IOrder } from "@/types/Types";
 // import { Alert, Button, Card, CardBody } from "@heroui/react";
 // import Image from "next/image";
 import { useEffect, useState } from "react";
+import { formatRupiah } from "@/lib/helper";
 // import { HiOutlineShoppingCart } from "react-icons/hi2";
 
 const HistoryPage = () => {
@@ -69,7 +70,7 @@ const HistoryPage = () => {
                     </p>
                     <div className="flex justify-end mt-4">
                       <p className="text-lg font-bold mt-2">
-                        Total Amount: {order.TotalAmount}
+                        Total Amount: {formatRupiah(Number(order.TotalAmount))}
                       </p>
                     </div>
                   </div>
