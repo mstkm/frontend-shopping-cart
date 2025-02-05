@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 const DashboardProductPage = () => {
   return (
-    <div className="p-8 flex-1">
+    <div className="flex-1">
       <div className="flex justify-between mb-5">
         <div className="flex gap-2">
           <p>Dashboard</p>

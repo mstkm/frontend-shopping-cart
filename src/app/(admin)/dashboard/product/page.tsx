@@ -49,7 +49,7 @@ const DashboardProductPage = () => {
     }, [refetchDataProducts])
 
     const [page, setPage] = useState(1);
-    const rowsPerPage = 5;
+    const rowsPerPage = 7;
     const pages = Math.ceil(products.length / rowsPerPage);
 
     const dataProducts = useMemo(() => {
