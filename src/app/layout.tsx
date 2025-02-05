@@ -20,6 +20,10 @@ export default function RootLayout({
 
   return (
     <html lang="en">
+      <head>
+        <title>AppLap</title>
+        <meta name="description" content="Electronic Shop" />
+      </head>
       <body className={`${montserrat.className}`}>
         <SessionProvider>
           <QueryClientProvider client={queryClient}>
