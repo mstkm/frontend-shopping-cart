@@ -5,16 +5,15 @@ import cartItemServices from "@/services/cartItemServices";
 import cartServices from "@/services/cartServices";
 import productServices from "@/services/productServices";
 import { ICart, ICartItem, IProduct } from "@/types/Types";
-import { Alert, Button, Card, CardBody } from "@heroui/react";
+import { Button, Card, CardBody } from "@heroui/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { HiOutlineShoppingCart } from "react-icons/hi2";
+import Swal from "sweetalert2";
 
 const ProductPage = () => {
     const baseUrlApi = process.env.NEXT_PUBLIC_BASE_URL_API;
     const [products, setProducts] = useState<IProduct[]>([]);
-    const [isShowAlertSuccess, setIsShowAlertSuccess] = useState<boolean>(false);
-    const [alertMessageSuccess, setAlertMessageSuccess] = useState<string>("");
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -27,12 +26,20 @@ const ProductPage = () => {
     const addCartItemService = async (data: ICartItem) => {
         try {
             await cartItemServices.create(data);
-            setIsShowAlertSuccess(true);
-            setAlertMessageSuccess("Success add to cart");
+            Swal.fire({
+                title: "Success!",
+                text: "Success add to cart!",
+                icon: "success",
+                confirmButtonText: "OK"
+            });
         } catch (error) {
             console.error(error);
-            setIsShowAlertSuccess(false);
-            setAlertMessageSuccess("");
+            Swal.fire({
+                title: "Error!",
+                text: (error as Error).message,
+                icon: "error",
+                confirmButtonText: "OK"
+            });
         }
     }
 
@@ -69,15 +76,6 @@ const ProductPage = () => {
 
     return (
         <main>
-            <div className="flex items-center justify-center w-full">
-                <Alert 
-                    className="mb-3"
-                    color="success" 
-                    title={alertMessageSuccess}                 
-                    isVisible={isShowAlertSuccess}
-                    onClose={() => setIsShowAlertSuccess(false)}
-                />
-            </div>
             <div className="grid grid-cols-5 gap-4 min-h-[calc(100vh-350px)]">
                 {products.map((product: IProduct) => {
                     return (

@@ -5,7 +5,7 @@ import "../globals.css";
 import { Montserrat } from "next/font/google";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react";
 import { ShoppingCart, ClipboardList } from "lucide-react";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -18,7 +18,9 @@ const montserrat = Montserrat({
     weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
+
 const UserLayout = ({ children }: PropTypes) => {
+    const { data: session } = useSession();
     return (
         <div className={`${montserrat.className}`}>
             <div>
@@ -49,6 +51,8 @@ const UserLayout = ({ children }: PropTypes) => {
                             <Link href="cart"><ShoppingCart size={24} /></Link>
                         </button>
 
+                        <h2>{session?.user?.name ?? "Guest"}</h2>
+
                         {/* Profile */}
                         <Dropdown>
                             <DropdownTrigger className="cursor-pointer">
@@ -60,6 +64,9 @@ const UserLayout = ({ children }: PropTypes) => {
                                 />
                             </DropdownTrigger>
                             <DropdownMenu>
+                                <DropdownItem key="profile" onPress={() => (window.location.href = "/profile")}>
+                                    Profile
+                                </DropdownItem>
                                 <DropdownItem key="logout" onPress={() => signOut({ callbackUrl: "http://localhost:3001" })}>
                                     Logout
                                 </DropdownItem>
@@ -70,12 +77,10 @@ const UserLayout = ({ children }: PropTypes) => {
                 <div className="w-full px-8 py-4">
                     {children}
                 </div>
-                <footer className="bg-blue-500 text-white p-6 mt-10">
+                {/* <footer className="bg-blue-500 text-white p-6 mt-10">
                     <div className="max-w-6xl mx-auto grid grid-cols-4 gap-6">
-                        {/* Logo */}
                         <div className="text-xl font-bold">APPLAP</div>
 
-                        {/* Product Menu */}
                         <div>
                             <h3 className="font-semibold mb-2">Product</h3>
                             <ul>
@@ -85,7 +90,6 @@ const UserLayout = ({ children }: PropTypes) => {
                             </ul>
                         </div>
 
-                        {/* Support Menu */}
                         <div>
                             <h3 className="font-semibold mb-2">Support</h3>
                             <ul>
@@ -94,7 +98,6 @@ const UserLayout = ({ children }: PropTypes) => {
                             </ul>
                         </div>
 
-                        {/* Company Menu */}
                         <div>
                             <h3 className="font-semibold mb-2">Company</h3>
                             <ul>
@@ -103,7 +106,6 @@ const UserLayout = ({ children }: PropTypes) => {
                         </div>
                     </div>
 
-                    {/* Hairline */}
                     <div className="border-t border-white mt-6 pt-4 flex justify-between text-sm opacity-70">
                         <span>APPLAP Inc. 2025</span>
                         <div className="space-x-4">
@@ -111,7 +113,7 @@ const UserLayout = ({ children }: PropTypes) => {
                             <a href="#">Privacy</a>
                         </div>
                     </div>
-                </footer>
+                </footer> */}
             </div>
         </div>
     )
