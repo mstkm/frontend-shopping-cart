@@ -4,6 +4,8 @@ import Link from "next/link";
 import ordersServices from "@/services/orderServices";
 import { IOrder } from "@/types/Types";
 import { useEffect, useState } from "react";
+import { formatRupiah } from "@/lib/helper";
+// import { HiOutlineShoppingCart } from "react-icons/hi2";
 
 const HistoryPage = () => {
   const [orders, setOrders] = useState<IOrder[]>([]);
@@ -52,7 +54,7 @@ const HistoryPage = () => {
                     </p>
                     <div className="flex justify-end mt-4">
                       <p className="text-lg font-bold mt-2">
-                        Total Amount: {order.TotalAmount}
+                        Total Amount: {formatRupiah(Number(order.TotalAmount))}
                       </p>
                     </div>
                   </div>

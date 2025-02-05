@@ -17,14 +17,13 @@ import { useMutation } from "@tanstack/react-query";
 import { Dispatch, SetStateAction, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
+import Swal from "sweetalert2";
 
 interface PropTypes {
     isOpenModalFormCreateProduct: boolean;
     setIsOpenModalFormCreateProduct: Dispatch<SetStateAction<boolean>>;
     refetchDataProducts: boolean;
     setRefetchDataProducts: Dispatch<SetStateAction<boolean>>;
-    setIsShowAlertSuccess: Dispatch<SetStateAction<boolean>>;
-    setAlertMessageSuccess: Dispatch<SetStateAction<string>>;
 }
 
 const schema = yup.object({
@@ -46,8 +45,6 @@ const ModalFormCreateProduct = ({
     setIsOpenModalFormCreateProduct,
     refetchDataProducts,
     setRefetchDataProducts,
-    setIsShowAlertSuccess,
-    setAlertMessageSuccess
 }: PropTypes) => {
     const [errorCreateProduct, setErrorCreateProduct] = useState<string>("");
     const { control, handleSubmit, formState: { errors }, reset } = useForm({
@@ -68,11 +65,21 @@ const ModalFormCreateProduct = ({
             reset();
             setRefetchDataProducts(!refetchDataProducts);
             setIsOpenModalFormCreateProduct(false);
-            setIsShowAlertSuccess(true);
-            setAlertMessageSuccess("Success create product!")
+            Swal.fire({
+                title: "Success!",
+                text: "Success create product!",
+                icon: "success",
+                confirmButtonText: "OK"
+            });
         },
         onError: (error) => {
             setErrorCreateProduct(error.message);
+            Swal.fire({
+                title: "Error!",
+                text: error.message,
+                icon: "error",
+                confirmButtonText: "OK"
+            });
         }
     });
 
@@ -176,7 +183,7 @@ const ModalFormCreateProduct = ({
                             />
                             
                             <div className="flex gap-2 justify-end w-full my-4">
-                                <Button color="danger" onPress={onClose}>
+                                <Button color="primary" variant="bordered" onPress={onClose}>
                                     Close
                                 </Button>
                                 <Button type={isPendingCreateProduct ? "button" : "submit"} color="primary">

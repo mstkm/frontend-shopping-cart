@@ -17,14 +17,13 @@ import { useMutation } from "@tanstack/react-query";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
+import Swal from "sweetalert2";
 
 interface PropTypes {
     isOpenModalFormEditProduct: boolean;
     setIsOpenModalFormEditProduct: Dispatch<SetStateAction<boolean>>;
     refetchDataProducts: boolean;
     setRefetchDataProducts: Dispatch<SetStateAction<boolean>>;
-    setIsShowAlertSuccess: Dispatch<SetStateAction<boolean>>;
-    setAlertMessageSuccess: Dispatch<SetStateAction<string>>;
     selectedProduct: IProduct;
 }
 
@@ -40,8 +39,6 @@ const ModalFormEditProduct = ({
     setIsOpenModalFormEditProduct,
     refetchDataProducts,
     setRefetchDataProducts,
-    setIsShowAlertSuccess,
-    setAlertMessageSuccess,
     selectedProduct
 }: PropTypes) => {
     const [errorEditProduct, setErrorEditProduct] = useState<string>("");
@@ -81,11 +78,21 @@ const ModalFormEditProduct = ({
             reset();
             setRefetchDataProducts(!refetchDataProducts);
             setIsOpenModalFormEditProduct(false);
-            setIsShowAlertSuccess(true);
-            setAlertMessageSuccess("Success Edit product!")
+            Swal.fire({
+                title: "Success!",
+                text: "Success edit product!",
+                icon: "success",
+                confirmButtonText: "OK"
+            });
         },
         onError: (error) => {
             setErrorEditProduct(error.message);
+            Swal.fire({
+                title: "Error!",
+                text: error.message,
+                icon: "error",
+                confirmButtonText: "OK"
+            });
         }
     });
 
@@ -96,7 +103,7 @@ const ModalFormEditProduct = ({
             <ModalContent>
                 {(onClose) => (
                     <>
-                        <ModalHeader className="flex flex-col gap-1">Add Product</ModalHeader>
+                        <ModalHeader className="flex flex-col gap-1">Edit Product</ModalHeader>
                         <ModalBody>
                         <Form
                             className="w-full flex flex-col"
@@ -173,7 +180,7 @@ const ModalFormEditProduct = ({
                         />
                             
                             <div className="flex gap-2 justify-end w-full my-4">
-                                <Button color="danger" onPress={onClose}>
+                                <Button color="primary" variant="bordered" onPress={onClose}>
                                     Close
                                 </Button>
                                 <Button type={isPendingEditProduct ? "button" : "submit"} color="primary">
