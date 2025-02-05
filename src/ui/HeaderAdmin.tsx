@@ -5,10 +5,11 @@ import {
     DropdownMenu,
     DropdownItem,
 } from "@heroui/react";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 const HeaderAdmin = () => {
+    const { data: session } = useSession();
     return (
         <>
             <div className="flex justify-between mb-5">
@@ -17,7 +18,8 @@ const HeaderAdmin = () => {
                     <p>/</p>
                     <Link href="/dashboard/product" className="font-bold">Product</Link>
                 </div>
-                <div>
+                <div className="flex gap-2">
+                    <h2 className="p-1">{session?.user?.name ?? "Guest"}</h2>
                      <Dropdown>
                         <DropdownTrigger className="cursor-pointer">
                             <Image 

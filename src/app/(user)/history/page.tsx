@@ -53,6 +53,8 @@ const HistoryPage = () => {
                      onClick={() => {
                       setSelectedCartID(order.CartID); // Simpan CartID ke state
                       setIsOpenModalDetailHistory(true); // Buka modal
+                      console.log(order.CartID);
+                      
                     }}
                   >
                     Detail

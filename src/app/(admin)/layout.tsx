@@ -27,7 +27,7 @@ const AdminLayout = ({ children }: PropTypes) => {
                 <div className="flex flex-col px-8 pt-4 pb-12 justify-between gap-4 h-screen min-w-fit w-[16rem] border-r-1 shadow-md bg-[#188cef] text-white">
                     <div>
                         <div className="flex items-center justify-start mb-8">
-                        <h1 className="font-bold text-2xl">AppShop</h1>
+                        <h1 className="font-bold text-2xl">APPLAP</h1>
                         </div>
                         <p className="mb-3">Menu</p>
 

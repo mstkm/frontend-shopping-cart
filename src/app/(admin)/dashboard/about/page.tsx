@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
+// import Link from "next/link";
+import HeaderAdmin from "@/ui/HeaderAdmin";
 
 export const metadata: Metadata = {
   title: "Dashboard | About",
@@ -31,18 +32,7 @@ const DashboardAboutPage = () => {
 
   return (
     <div>
-      <div className="flex justify-between mb-5">
-        <div className="flex gap-2">
-          <p>Dashboard</p>
-          <p>/</p>
-          <Link href="/dashboard/product" className="font-bold">
-            About
-          </Link>
-        </div>
-        <div>
-          <Image src="/images/user.png" alt="User" width={30} height={30} />
-        </div>
-      </div>
+      <HeaderAdmin />
       <div>
         <div className="flex flex-col items-center w-full my-8">
           <h1 className="text-3xl font-bold text-center">About Member</h1>
